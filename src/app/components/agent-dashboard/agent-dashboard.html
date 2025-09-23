@@ -1,65 +1,151 @@
-<div class="container-fluid">
-  <h2>Agent Dashboard</h2>
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="fw-bold text-dark mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>Agent Dashboard</h2>
+      <p class="text-muted">Manage your assigned customers and their policy applications</p>
+    </div>
+    <div class="col-auto">
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" (click)="loadCustomers()">
+          <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+        </button>
+        <button class="btn btn-outline-danger rounded-pill" (click)="logout()">
+          <i class="bi bi-box-arrow-right me-2"></i>Logout
+        </button>
+      </div>
+    </div>
+  </div>
   
   <div class="row">
     <!-- Customer List -->
     <div class="col-md-4">
-      <h4>Assigned Customers</h4>
-      <div class="list-group">
-        <button 
-          *ngFor="let customer of customers" 
-          class="list-group-item list-group-item-action"
-          [class.active]="selectedCustomer?.id === customer.id"
-          (click)="selectCustomer(customer)">
-          <div class="d-flex w-100 justify-content-between">
-            <h6 class="mb-1">{{ customer.user.email }}</h6>
-            <small class="text-muted">{{ customer.policy.name }}</small>
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <h5 class="mb-0"><i class="bi bi-people me-2"></i>Assigned Customers</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush" *ngIf="customers.length > 0">
+            <button 
+              *ngFor="let customer of customers" 
+              class="list-group-item list-group-item-action border-0 p-3"
+              [class.active]="selectedCustomer?.id === customer.id"
+              (click)="selectCustomer(customer)"
+              style="border-left: 4px solid transparent !important;"
+              [style.border-left-color]="selectedCustomer?.id === customer.id ? '#667eea' : 'transparent'">
+              <div class="d-flex w-100 justify-content-between align-items-start">
+                <div>
+                  <h6 class="mb-1 fw-semibold">{{ customer.user.name || customer.user.email }}</h6>
+                  <p class="mb-1 text-muted small"><i class="bi bi-envelope me-1"></i>{{ customer.user.email }}</p>
+                  <p class="mb-1 text-muted small"><i class="bi bi-shield-check me-1"></i>{{ customer.policy.name }}</p>
+                  <small class="text-muted"><i class="bi bi-calendar me-1"></i>{{ customer.durationMonths }} months</small>
+                </div>
+                <span class="badge" [class]="'bg-' + (customer.status === 'Approved' ? 'success' : customer.status === 'Rejected' ? 'danger' : 'warning')">{{ customer.status }}</span>
+              </div>
+            </button>
           </div>
-          <p class="mb-1">Duration: {{ customer.durationMonths }} months</p>
-          <small class="text-muted">Status: {{ customer.status }}</small>
-        </button>
+          <div class="text-center py-5" *ngIf="customers.length === 0">
+            <i class="bi bi-person-x text-muted" style="font-size: 3rem;"></i>
+            <h6 class="text-muted mt-3">No Customers Assigned</h6>
+            <p class="text-muted mb-3">You don't have any assigned customers yet.</p>
+            <button class="btn btn-outline-primary" (click)="loadCustomers()">
+              <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     
     <!-- Customer Details -->
-    <div class="col-md-8" *ngIf="selectedCustomer">
-      <div class="card">
-        <div class="card-header">
-          <h5>{{ selectedCustomer.user.email }} - {{ selectedCustomer.policy.name }}</h5>
+    <div class="col-md-8">
+      <div *ngIf="selectedCustomer" class="card border-0 shadow-sm">
+        <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+          <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>{{ selectedCustomer.user.name || selectedCustomer.user.email }}</h5>
+          <small class="opacity-75">{{ selectedCustomer.policy.name }}</small>
         </div>
-        <div class="card-body">
-          <div class="row">
+        <div class="card-body p-4">
+          <div class="row g-4">
             <div class="col-md-6">
-              <p><strong>Policy:</strong> {{ selectedCustomer.policy.name }}</p>
-              <p><strong>Premium:</strong> ₹{{ selectedCustomer.policy.premium }}</p>
-              <p><strong>Duration:</strong> {{ selectedCustomer.durationMonths }} months</p>
-              <p><strong>Total Amount:</strong> ₹{{ (selectedCustomer.policy.premium * selectedCustomer.durationMonths / 12) | number:'1.2-2' }}</p>
+              <div class="bg-light rounded-3 p-3">
+                <h6 class="text-primary mb-3"><i class="bi bi-shield-check me-2"></i>Policy Details</h6>
+                <div class="mb-2"><strong>Policy:</strong> <span class="text-muted">{{ selectedCustomer.policy.name }}</span></div>
+                <div class="mb-2"><strong>Premium:</strong> <span class="text-success fw-bold">₹{{ selectedCustomer.policy.premium | number }}</span></div>
+                <div class="mb-2"><strong>Duration:</strong> <span class="text-muted">{{ selectedCustomer.durationMonths }} months</span></div>
+                <div><strong>Total Amount:</strong> <span class="text-success fw-bold">₹{{ (selectedCustomer.policy.premium * selectedCustomer.durationMonths / 12) | number:'1.2-2' }}</span></div>
+              </div>
             </div>
             <div class="col-md-6">
-              <p><strong>Applied Date:</strong> {{ selectedCustomer.createdAt | date:'short' }}</p>
-              <p><strong>Status:</strong> 
-                <span class="badge" [class]="'bg-' + (selectedCustomer.status === 'Approved' ? 'success' : selectedCustomer.status === 'Rejected' ? 'danger' : 'warning')">
-                  {{ selectedCustomer.status }}
-                </span>
-              </p>
+              <div class="bg-light rounded-3 p-3">
+                <h6 class="text-info mb-3"><i class="bi bi-info-circle me-2"></i>Application Info</h6>
+                <div class="mb-2"><strong>Applied Date:</strong> <span class="text-muted">{{ selectedCustomer.createdAt | date:'medium' }}</span></div>
+                <div class="mb-3">
+                  <strong>Status:</strong> 
+                  <span class="badge fs-6 ms-2" [class]="'bg-' + (selectedCustomer.status === 'Approved' ? 'success' : selectedCustomer.status === 'Rejected' ? 'danger' : 'warning')">
+                    <i class="bi" [class]="selectedCustomer.status === 'Approved' ? 'bi-check-circle' : selectedCustomer.status === 'Rejected' ? 'bi-x-circle' : 'bi-clock'"></i>
+                    {{ selectedCustomer.status }}
+                  </span>
+                </div>
+                <div *ngIf="selectedCustomer.status === 'Assigned'">
+                  <h6 class="text-warning mb-3"><i class="bi bi-gear me-2"></i>Actions Required</h6>
+                  <div class="d-grid gap-2 d-md-flex">
+                    <button class="btn btn-success rounded-pill px-4" (click)="approveApplication('Approved')">
+                      <i class="bi bi-check-circle me-2"></i>Approve
+                    </button>
+                    <button class="btn btn-danger rounded-pill px-4" (click)="approveApplication('Rejected')">
+                      <i class="bi bi-x-circle me-2"></i>Reject
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <div class="mt-3" *ngIf="selectedCustomer.status === 'Assigned'">
-            <h6>Actions</h6>
-            <button class="btn btn-success me-2" (click)="approveApplication('Approved')">Approve</button>
-            <button class="btn btn-danger" (click)="approveApplication('Rejected')">Reject</button>
           </div>
         </div>
       </div>
       
-      <!-- Customer Documents -->
-      <div class="card mt-3">
-        <div class="card-header">
-          <h6>Customer Documents</h6>
+      <div *ngIf="!selectedCustomer" class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+          <i class="bi bi-arrow-left-circle text-muted" style="font-size: 3rem;"></i>
+          <h5 class="text-muted mt-3">Select a Customer</h5>
+          <p class="text-muted mb-0">Choose a customer from the list to view their details and manage their application.</p>
         </div>
-        <div class="card-body">
-          <app-file-upload></app-file-upload>
+      </div>
+      
+      <!-- Customer Documents -->
+      <div class="card mt-4 border-0 shadow-sm" *ngIf="selectedCustomer && selectedCustomer.hasDocs">
+        <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+          <h6 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Customer Documents</h6>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <button class="btn btn-outline-success w-100 py-3 rounded-3" (click)="downloadDocument('aadhar')">
+                <i class="bi bi-download me-2"></i>
+                <div class="fw-semibold">Aadhar Card</div>
+                <small class="text-muted">Identity Proof</small>
+              </button>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-outline-info w-100 py-3 rounded-3" (click)="downloadDocument('pan')">
+                <i class="bi bi-download me-2"></i>
+                <div class="fw-semibold">PAN Card</div>
+                <small class="text-muted">Tax Document</small>
+              </button>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-outline-warning w-100 py-3 rounded-3" (click)="downloadDocument('passbook')">
+                <i class="bi bi-download me-2"></i>
+                <div class="fw-semibold">Bank Passbook</div>
+                <small class="text-muted">Financial Proof</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mt-4 border-0 shadow-sm" *ngIf="selectedCustomer && !selectedCustomer.hasDocs">
+        <div class="card-body text-center py-5">
+          <i class="bi bi-file-earmark-x text-muted" style="font-size: 3rem;"></i>
+          <h6 class="text-muted mt-3">No Documents Available</h6>
+          <p class="text-muted mb-0">Customer hasn't uploaded documents yet.</p>
         </div>
       </div>
     </div>

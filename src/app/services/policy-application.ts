@@ -17,12 +17,23 @@ export class PolicyApplication {
     });
   }
 
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
   getApplications(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/policyapplications`, { headers: this.getHeaders() });
   }
 
   createApplication(application: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/policyapplications`, application, { headers: this.getHeaders() });
+  }
+
+  createApplicationWithDocuments(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/policyapplications`, formData, { headers: this.getAuthHeaders() });
   }
 
   approveApplication(id: number, approval: any): Observable<any> {
