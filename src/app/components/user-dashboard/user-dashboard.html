@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <h2>User Dashboard</h2>
+  
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'policies'" (click)="setActiveTab('policies')">Policies</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'claims'" (click)="setActiveTab('claims')">Claims</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'applications'" (click)="setActiveTab('applications')">My Applications</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'uploads'" (click)="setActiveTab('uploads')">Uploads</a>
+    </li>
+  </ul>
+
+  <div class="tab-content mt-3">
+    <div *ngIf="activeTab === 'policies'">
+      <app-policy-list></app-policy-list>
+    </div>
+    <div *ngIf="activeTab === 'claims'">
+      <app-claims-table></app-claims-table>
+    </div>
+    <div *ngIf="activeTab === 'applications'">
+      <app-applications-table></app-applications-table>
+    </div>
+    <div *ngIf="activeTab === 'uploads'">
+      <app-file-upload></app-file-upload>
+    </div>
+  </div>
+</div>

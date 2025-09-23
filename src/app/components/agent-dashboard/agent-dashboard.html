@@ -1,0 +1,67 @@
+<div class="container-fluid">
+  <h2>Agent Dashboard</h2>
+  
+  <div class="row">
+    <!-- Customer List -->
+    <div class="col-md-4">
+      <h4>Assigned Customers</h4>
+      <div class="list-group">
+        <button 
+          *ngFor="let customer of customers" 
+          class="list-group-item list-group-item-action"
+          [class.active]="selectedCustomer?.id === customer.id"
+          (click)="selectCustomer(customer)">
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">{{ customer.user.email }}</h6>
+            <small class="text-muted">{{ customer.policy.name }}</small>
+          </div>
+          <p class="mb-1">Duration: {{ customer.durationMonths }} months</p>
+          <small class="text-muted">Status: {{ customer.status }}</small>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Customer Details -->
+    <div class="col-md-8" *ngIf="selectedCustomer">
+      <div class="card">
+        <div class="card-header">
+          <h5>{{ selectedCustomer.user.email }} - {{ selectedCustomer.policy.name }}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Policy:</strong> {{ selectedCustomer.policy.name }}</p>
+              <p><strong>Premium:</strong> ₹{{ selectedCustomer.policy.premium }}</p>
+              <p><strong>Duration:</strong> {{ selectedCustomer.durationMonths }} months</p>
+              <p><strong>Total Amount:</strong> ₹{{ (selectedCustomer.policy.premium * selectedCustomer.durationMonths / 12) | number:'1.2-2' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Applied Date:</strong> {{ selectedCustomer.createdAt | date:'short' }}</p>
+              <p><strong>Status:</strong> 
+                <span class="badge" [class]="'bg-' + (selectedCustomer.status === 'Approved' ? 'success' : selectedCustomer.status === 'Rejected' ? 'danger' : 'warning')">
+                  {{ selectedCustomer.status }}
+                </span>
+              </p>
+            </div>
+          </div>
+          
+          <div class="mt-3" *ngIf="selectedCustomer.status === 'Assigned'">
+            <h6>Actions</h6>
+            <button class="btn btn-success me-2" (click)="approveApplication('Approved')">Approve</button>
+            <button class="btn btn-danger" (click)="approveApplication('Rejected')">Reject</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Customer Documents -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6>Customer Documents</h6>
+        </div>
+        <div class="card-body">
+          <app-file-upload></app-file-upload>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

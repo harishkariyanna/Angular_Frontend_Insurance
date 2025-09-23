@@ -1,0 +1,108 @@
+<div>
+  <h4>{{ authService.isAdmin() ? 'All Policy Applications' : 'My Applications' }}</h4>
+  
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Policy</th>
+          <th>Duration</th>
+          <th>Total Premium</th>
+          <th>Status</th>
+          <th>Applied Date</th>
+          <th *ngIf="authService.isAdmin()">User</th>
+          <th *ngIf="authService.isAdmin()">Assigned Agent</th>
+          <th *ngIf="authService.isAdmin()">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of applications">
+          <td>{{ app.policy?.name }}</td>
+          <td>{{ app.durationMonths }} months</td>
+          <td>₹{{ (app.policy?.premium * app.durationMonths / 12) | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge" [class]="'bg-' + (app.status === 'Approved' ? 'success' : app.status === 'Rejected' ? 'danger' : 'warning')">
+              {{ app.status }}
+            </span>
+          </td>
+          <td>{{ app.createdAt | date:'short' }}</td>
+          <td *ngIf="authService.isAdmin()">{{ app.user?.email }}</td>
+          <td *ngIf="authService.isAdmin()">{{ app.assignedAgent?.email || 'Not Assigned' }}</td>
+          <td *ngIf="authService.isAdmin()">
+            <button class="btn btn-sm btn-warning me-1" (click)="openAssignModal(app)" *ngIf="app.status === 'Pending'">
+              Assign Agent
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Approval Modal -->
+  <div class="modal" [class.d-block]="selectedApp" *ngIf="selectedApp">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Review Application</h5>
+          <button type="button" class="btn-close" (click)="selectedApp = null"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <strong>Policy:</strong> {{ selectedApp.policy?.name }}<br>
+            <strong>User:</strong> {{ selectedApp.user?.email }}<br>
+            <strong>Duration:</strong> {{ selectedApp.durationMonths }} months<br>
+            <strong>Total Premium:</strong> ₹{{ (selectedApp.policy?.premium * selectedApp.durationMonths / 12) | number:'1.2-2' }}
+          </div>
+          
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" [(ngModel)]="approvalStatus">
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="comments" class="form-label">Admin Comments</label>
+            <textarea class="form-control" id="comments" [(ngModel)]="adminComments" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="selectedApp = null">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="approveApplication()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" *ngIf="selectedApp" (click)="selectedApp = null"></div>
+
+  <!-- Agent Assignment Modal -->
+  <div class="modal" [class.d-block]="assigningApp" *ngIf="assigningApp" style="z-index: 1060;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Assign Agent</h5>
+          <button type="button" class="btn-close" (click)="assigningApp = null; selectedAgentId = null"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Customer:</strong> {{ assigningApp.user?.email }}</p>
+          <p><strong>Policy:</strong> {{ assigningApp.policy?.name }}</p>
+          
+          <div class="mb-3">
+            <label for="agent" class="form-label">Select Agent</label>
+            <select class="form-select" id="agent" [(ngModel)]="selectedAgentId">
+              <option value="0">Select Agent</option>
+              <option *ngFor="let agent of agents" [value]="agent.id">{{ agent.email }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="assigningApp = null; selectedAgentId = null">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="assignAgent()" [disabled]="selectedAgentId === 0">Assign</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" *ngIf="assigningApp" (click)="assigningApp = null; selectedAgentId = null" style="z-index: 1055;"></div>
+</div>

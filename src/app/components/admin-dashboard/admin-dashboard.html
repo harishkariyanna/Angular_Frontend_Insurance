@@ -1,0 +1,45 @@
+<div class="container mt-4">
+  <h2>Admin Dashboard</h2>
+  
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'policies'" (click)="setActiveTab('policies')">Manage Policies</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'applications'" (click)="setActiveTab('applications')">Applications</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'claims'" (click)="setActiveTab('claims')">All Claims</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'uploads'" (click)="setActiveTab('uploads')">All Uploads</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'agents'" (click)="setActiveTab('agents')">Manage Agents</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'assignments'" (click)="setActiveTab('assignments')">Customer Assignment</a>
+    </li>
+  </ul>
+
+  <div class="tab-content mt-3">
+    <div *ngIf="activeTab === 'policies'">
+      <app-policy-list [isAdmin]="true"></app-policy-list>
+    </div>
+    <div *ngIf="activeTab === 'applications'">
+      <app-applications-table></app-applications-table>
+    </div>
+    <div *ngIf="activeTab === 'claims'">
+      <app-claims-table></app-claims-table>
+    </div>
+    <div *ngIf="activeTab === 'uploads'">
+      <app-file-upload></app-file-upload>
+    </div>
+    <div *ngIf="activeTab === 'agents'">
+      <app-agent-management></app-agent-management>
+    </div>
+    <div *ngIf="activeTab === 'assignments'">
+      <app-customer-assignment></app-customer-assignment>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div>
+  <h4>File Uploads</h4>
+  
+  <div class="card mb-4">
+    <div class="card-body">
+      <div 
+        class="upload-area p-4 text-center border border-dashed rounded"
+        [class.drag-over]="dragOver"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)">
+        <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+        <p>Drag and drop files here or</p>
+        <input type="file" class="d-none" #fileInput (change)="onFileSelected($event)">
+        <button class="btn btn-primary" (click)="fileInput.click()">Choose Files</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3 mb-3" *ngFor="let upload of uploads">
+      <div class="card">
+        <div class="card-body text-center">
+          <div *ngIf="isImage(upload.fileType)" class="mb-2">
+            <img [src]="'http://localhost:5000/' + upload.filePath" class="img-thumbnail" style="max-height: 100px;">
+          </div>
+          <div *ngIf="!isImage(upload.fileType)" class="mb-2">
+            <i class="fas fa-file fa-3x text-muted"></i>
+          </div>
+          <h6 class="card-title">{{ upload.fileName }}</h6>
+          <p class="card-text small">{{ upload.fileSize | number }} bytes</p>
+          <button class="btn btn-sm btn-primary me-1" (click)="downloadFile(upload)">Download</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteFile(upload.id)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

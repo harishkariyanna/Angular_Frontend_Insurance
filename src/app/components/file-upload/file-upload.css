@@ -1,0 +1,8 @@
+.upload-area {
+  transition: all 0.3s ease;
+}
+
+.upload-area.drag-over {
+  background-color: #f8f9fa;
+  border-color: #007bff !important;
+}

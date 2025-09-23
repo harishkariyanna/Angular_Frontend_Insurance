@@ -1,0 +1,12 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Insurance App</a>
+    <div class="navbar-nav ms-auto">
+      <a class="nav-link" routerLink="/user-dashboard">Policies</a>
+      <a class="nav-link" routerLink="/user-dashboard">Claims</a>
+      <a class="nav-link" routerLink="/user-dashboard">Uploads</a>
+      <a class="nav-link" *ngIf="authService.isAdmin()" routerLink="/admin-dashboard">Admin</a>
+      <button class="btn btn-outline-light ms-2" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</nav>

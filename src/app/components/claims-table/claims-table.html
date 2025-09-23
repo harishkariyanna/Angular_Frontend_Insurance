@@ -1,0 +1,97 @@
+<div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Claims</h4>
+    <button class="btn btn-success" (click)="showAddForm = !showAddForm">Submit Claim</button>
+  </div>
+
+  <div class="mb-3">
+    <select class="form-select" [(ngModel)]="filterStatus">
+      <option value="">All Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Approved">Approved</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+  </div>
+
+  <div *ngIf="showAddForm" class="card mb-3">
+    <div class="card-body">
+      <h5>Submit New Claim</h5>
+      <form (ngSubmit)="addClaim()">
+        <div class="mb-2">
+          <input type="text" class="form-control" placeholder="Claim Title" [(ngModel)]="newClaim.title" name="title" required>
+        </div>
+        <div class="mb-2">
+          <textarea class="form-control" placeholder="Description" [(ngModel)]="newClaim.description" name="description"></textarea>
+        </div>
+        <div class="mb-2">
+          <input type="number" class="form-control" placeholder="Amount" [(ngModel)]="newClaim.amount" name="amount" required>
+        </div>
+        <div class="mb-2">
+          <select class="form-select" [(ngModel)]="newClaim.policyApplicationId" name="policyApplicationId" required>
+            <option value="0">Select Approved Policy</option>
+            <option *ngFor="let app of approvedPolicies" [value]="app.id">{{ app.policy.name }} ({{ app.durationMonths }} months)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary me-2">Submit</button>
+        <button type="button" class="btn btn-secondary" (click)="showAddForm = false">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Policy</th>
+          <th>Date</th>
+          <th *ngIf="authService.isAdmin() || authService.isAgent()">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let claim of filteredClaims">
+          <td>{{ claim.title }}</td>
+          <td>₹{{ claim.amount }}</td>
+          <td>
+            <span class="badge" [class]="'bg-' + (claim.status === 'Approved' ? 'success' : claim.status === 'Rejected' ? 'danger' : 'warning')">
+              {{ claim.status }}
+            </span>
+          </td>
+          <td>{{ claim.policyApplication?.policy?.name }}</td>
+          <td>{{ claim.createdAt | date:'short' }}</td>
+          <td *ngIf="authService.isAdmin() || authService.isAgent()">
+            <button class="btn btn-sm btn-primary" (click)="openApprovalModal(claim)" *ngIf="claim.status === 'Pending'">
+              Review
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Approval Modal -->
+  <div class="modal" [class.d-block]="selectedClaim" *ngIf="selectedClaim">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Review Claim</h5>
+          <button type="button" class="btn-close" (click)="selectedClaim = null"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Title:</strong> {{ selectedClaim.title }}</p>
+          <p><strong>Amount:</strong> ₹{{ selectedClaim.amount }}</p>
+          <p><strong>Description:</strong> {{ selectedClaim.description }}</p>
+          <p><strong>Policy:</strong> {{ selectedClaim.policyApplication?.policy?.name }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" (click)="approveClaim('Approved')">Approve</button>
+          <button type="button" class="btn btn-danger" (click)="approveClaim('Rejected')">Reject</button>
+          <button type="button" class="btn btn-secondary" (click)="selectedClaim = null">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" *ngIf="selectedClaim" (click)="selectedClaim = null"></div>
+</div>
