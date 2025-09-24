@@ -12,12 +12,14 @@ import { Auth } from '../../services/auth';
 })
 export class ApplicationsTable implements OnInit {
   applications: any[] = [];
+  filteredApplications: any[] = [];
   agents: any[] = [];
   selectedApp: any = null;
   assigningApp: any = null;
   approvalStatus = '';
   adminComments = '';
   selectedAgentId: number | null = 0;
+  searchTerm = '';
 
   constructor(
     private policyApplicationService: PolicyApplication,
@@ -34,7 +36,23 @@ export class ApplicationsTable implements OnInit {
   loadApplications() {
     this.policyApplicationService.getApplications().subscribe(apps => {
       this.applications = apps;
+      this.filteredApplications = apps;
     });
+  }
+
+  filterApplications() {
+    if (!this.searchTerm) {
+      this.filteredApplications = this.applications;
+      return;
+    }
+    
+    const term = this.searchTerm.toLowerCase();
+    this.filteredApplications = this.applications.filter(app => 
+      app.policy?.name.toLowerCase().includes(term) ||
+      app.user?.email.toLowerCase().includes(term) ||
+      app.status.toLowerCase().includes(term) ||
+      app.assignedAgent?.email?.toLowerCase().includes(term)
+    );
   }
 
   openApprovalModal(app: any) {

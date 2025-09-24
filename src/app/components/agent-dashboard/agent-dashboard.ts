@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { PolicyApplication } from '../../services/policy-application';
 import { Claim } from '../../services/claim';
 import { Auth } from '../../services/auth';
+import { ClaimsTable } from '../claims-table/claims-table';
 
 @Component({
   selector: 'app-agent-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, ClaimsTable],
   templateUrl: './agent-dashboard.html',
   styleUrl: './agent-dashboard.css'
 })
@@ -16,6 +17,9 @@ export class AgentDashboard implements OnInit {
   selectedCustomer: any = null;
   customerClaims: any[] = [];
   customerUploads: any[] = [];
+  activeTab = 'applications';
+  showDetailsModal = false;
+  approvedCustomers: any[] = [];
 
   constructor(
     private policyApplicationService: PolicyApplication,
@@ -26,6 +30,17 @@ export class AgentDashboard implements OnInit {
 
   ngOnInit() {
     this.loadCustomers();
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+    if (tab === 'customers') {
+      this.loadApprovedCustomers();
+    }
+  }
+
+  loadApprovedCustomers() {
+    this.approvedCustomers = this.customers.filter(c => c.status === 'Approved');
   }
 
   loadCustomers() {
@@ -39,13 +54,17 @@ export class AgentDashboard implements OnInit {
     });
   }
 
-  selectCustomer(customer: any) {
+  viewDetails(customer: any) {
     this.selectedCustomer = customer;
-    this.loadCustomerDetails();
+    this.showDetailsModal = true;
+  }
+
+  closeDetailsModal() {
+    this.showDetailsModal = false;
+    this.selectedCustomer = null;
   }
 
   loadCustomerDetails() {
-    // Load customer claims and uploads
   }
 
   downloadDocument(docType: string) {
@@ -76,12 +95,21 @@ export class AgentDashboard implements OnInit {
     });
   }
 
-  approveApplication(status: string) {
+  approveApplication(customer: any, status: string) {
     const approval = { status, comments: '' };
-    this.policyApplicationService.approveApplication(this.selectedCustomer.id, approval).subscribe(() => {
+    this.policyApplicationService.approveApplication(customer.id, approval).subscribe(() => {
       this.loadCustomers();
-      this.selectedCustomer = null;
     });
+  }
+
+  approveFromModal(status: string) {
+    if (this.selectedCustomer) {
+      const approval = { status, comments: '' };
+      this.policyApplicationService.approveApplication(this.selectedCustomer.id, approval).subscribe(() => {
+        this.loadCustomers();
+        this.closeDetailsModal();
+      });
+    }
   }
 
   logout() {

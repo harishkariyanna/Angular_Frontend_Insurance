@@ -15,7 +15,9 @@ export class PolicyList implements OnInit {
   @ViewChild(PolicyApply) policyApply!: PolicyApply;
   policies: any[] = [];
   showAddForm = false;
+  showEditForm = false;
   newPolicy = { name: '', description: '', premium: 0 };
+  editingPolicy: any = null;
 
   constructor(private policyService: Policy) {}
 
@@ -43,6 +45,25 @@ export class PolicyList implements OnInit {
         this.loadPolicies();
       });
     }
+  }
+
+  editPolicy(policy: any) {
+    this.editingPolicy = { ...policy };
+    this.showEditForm = true;
+    this.showAddForm = false;
+  }
+
+  updatePolicy() {
+    this.policyService.updatePolicy(this.editingPolicy.id, this.editingPolicy).subscribe(() => {
+      this.loadPolicies();
+      this.showEditForm = false;
+      this.editingPolicy = null;
+    });
+  }
+
+  cancelEdit() {
+    this.showEditForm = false;
+    this.editingPolicy = null;
   }
 
   applyForPolicy(policy: any) {

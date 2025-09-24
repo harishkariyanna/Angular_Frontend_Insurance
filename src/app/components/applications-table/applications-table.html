@@ -1,5 +1,18 @@
 <div>
-  <h4>{{ authService.isAdmin() ? 'All Policy Applications' : 'My Applications' }}</h4>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="text-white">{{ authService.isAdmin() ? 'All Policy Applications' : 'My Applications' }}</h4>
+    <div class="col-md-4" *ngIf="authService.isAdmin()">
+      <div class="input-group">
+        <span class="input-group-text" style="background: #40407a; border-color: #5a5a8a; color: #b8b8d1;">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Search applications..." 
+               [(ngModel)]="searchTerm" 
+               style="background: #40407a; border-color: #5a5a8a; color: #e8e8f5;"
+               (input)="filterApplications()">
+      </div>
+    </div>
+  </div>
   
   <div class="table-responsive">
     <table class="table table-striped">
@@ -16,7 +29,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let app of applications">
+        <tr *ngFor="let app of filteredApplications">
           <td>{{ app.policy?.name }}</td>
           <td>{{ app.durationMonths }} months</td>
           <td>₹{{ (app.policy?.premium * app.durationMonths / 12) | number:'1.2-2' }}</td>
@@ -25,7 +38,7 @@
               {{ app.status }}
             </span>
           </td>
-          <td>{{ app.createdAt | date:'short' }}</td>
+          <td>{{ app.createdAt | date:'dd/MM/yyyy, h:mm a':'en-IN' }}</td>
           <td *ngIf="authService.isAdmin()">{{ app.user?.email }}</td>
           <td *ngIf="authService.isAdmin()">{{ app.assignedAgent?.email || 'Not Assigned' }}</td>
           <td *ngIf="authService.isAdmin()">

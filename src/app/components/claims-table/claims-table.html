@@ -43,6 +43,7 @@
       <thead>
         <tr>
           <th>Title</th>
+          <th>Customer</th>
           <th>Amount</th>
           <th>Status</th>
           <th>Policy</th>
@@ -53,6 +54,7 @@
       <tbody>
         <tr *ngFor="let claim of filteredClaims">
           <td>{{ claim.title }}</td>
+          <td>{{ claim.user?.name || claim.user?.email }}</td>
           <td>₹{{ claim.amount }}</td>
           <td>
             <span class="badge" [class]="'bg-' + (claim.status === 'Approved' ? 'success' : claim.status === 'Rejected' ? 'danger' : 'warning')">
@@ -60,7 +62,7 @@
             </span>
           </td>
           <td>{{ claim.policyApplication?.policy?.name }}</td>
-          <td>{{ claim.createdAt | date:'short' }}</td>
+          <td>{{ claim.createdAt | date:'dd/MM/yyyy, h:mm a':'en-IN' }}</td>
           <td *ngIf="authService.isAdmin() || authService.isAgent()">
             <button class="btn btn-sm btn-primary" (click)="openApprovalModal(claim)" *ngIf="claim.status === 'Pending'">
               Review

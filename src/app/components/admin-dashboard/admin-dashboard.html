@@ -1,5 +1,8 @@
 <div class="container mt-4">
-  <h2>Admin Dashboard</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Admin Dashboard</h2>
+    <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+  </div>
   
   <ul class="nav nav-tabs">
     <li class="nav-item">
@@ -7,12 +10,6 @@
     </li>
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab === 'applications'" (click)="setActiveTab('applications')">Applications</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'claims'" (click)="setActiveTab('claims')">All Claims</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'uploads'" (click)="setActiveTab('uploads')">All Uploads</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab === 'agents'" (click)="setActiveTab('agents')">Manage Agents</a>
@@ -28,12 +25,6 @@
     </div>
     <div *ngIf="activeTab === 'applications'">
       <app-applications-table></app-applications-table>
-    </div>
-    <div *ngIf="activeTab === 'claims'">
-      <app-claims-table></app-claims-table>
-    </div>
-    <div *ngIf="activeTab === 'uploads'">
-      <app-file-upload></app-file-upload>
     </div>
     <div *ngIf="activeTab === 'agents'">
       <app-agent-management></app-agent-management>

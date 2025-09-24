@@ -23,6 +23,25 @@
     </div>
   </div>
 
+  <div *ngIf="showEditForm && isAdmin" class="card mb-3">
+    <div class="card-body">
+      <h5>Edit Policy</h5>
+      <form (ngSubmit)="updatePolicy()">
+        <div class="mb-2">
+          <input type="text" class="form-control" placeholder="Policy Name" [(ngModel)]="editingPolicy.name" name="editName" required>
+        </div>
+        <div class="mb-2">
+          <textarea class="form-control" placeholder="Description" [(ngModel)]="editingPolicy.description" name="editDescription"></textarea>
+        </div>
+        <div class="mb-2">
+          <input type="number" class="form-control" placeholder="Premium" [(ngModel)]="editingPolicy.premium" name="editPremium" required>
+        </div>
+        <button type="submit" class="btn btn-primary me-2">Update</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-md-4 mb-3" *ngFor="let policy of policies">
       <div class="card">
@@ -31,7 +50,10 @@
           <p class="card-text">{{ policy.description }}</p>
           <p class="card-text"><strong>₹{{ policy.premium }}</strong></p>
           <button *ngIf="!isAdmin" class="btn btn-primary" (click)="applyForPolicy(policy)">Apply</button>
-          <button *ngIf="isAdmin" class="btn btn-danger" (click)="deletePolicy(policy.id)">Delete</button>
+          <div *ngIf="isAdmin">
+            <button class="btn btn-warning me-2" (click)="editPolicy(policy)">Edit</button>
+            <button class="btn btn-danger" (click)="deletePolicy(policy.id)">Delete</button>
+          </div>
         </div>
       </div>
     </div>
