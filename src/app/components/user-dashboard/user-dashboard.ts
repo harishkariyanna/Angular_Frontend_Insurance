@@ -5,11 +5,12 @@ import { PolicyList } from '../policy-list/policy-list';
 import { ClaimsTable } from '../claims-table/claims-table';
 
 import { ApplicationsTable } from '../applications-table/applications-table';
+import { CustomerProfile } from '../customer-profile/customer-profile';
 import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-user-dashboard',
-  imports: [CommonModule, PolicyList, ClaimsTable, ApplicationsTable],
+  imports: [CommonModule, PolicyList, ClaimsTable, ApplicationsTable, CustomerProfile],
   templateUrl: './user-dashboard.html',
   styleUrl: './user-dashboard.css'
 })

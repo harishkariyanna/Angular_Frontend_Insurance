@@ -1,7 +1,7 @@
 <div>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>Claims</h4>
-    <button class="btn btn-success" (click)="showAddForm = !showAddForm">Submit Claim</button>
+    <button *ngIf="!hideSubmitButton" class="btn btn-success" (click)="showAddForm = !showAddForm">Submit Claim</button>
   </div>
 
   <div class="mb-3">
@@ -13,7 +13,7 @@
     </select>
   </div>
 
-  <div *ngIf="showAddForm" class="card mb-3">
+  <div *ngIf="showAddForm && !hideSubmitButton" class="card mb-3">
     <div class="card-body">
       <h5>Submit New Claim</h5>
       <form (ngSubmit)="addClaim()">

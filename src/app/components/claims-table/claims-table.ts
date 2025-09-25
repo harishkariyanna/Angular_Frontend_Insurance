@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Claim } from '../../services/claim';
@@ -11,6 +11,7 @@ import { Auth } from '../../services/auth';
   styleUrl: './claims-table.css'
 })
 export class ClaimsTable implements OnInit {
+  @Input() hideSubmitButton = false;
   claims: any[] = [];
   approvedPolicies: any[] = [];
   showAddForm = false;

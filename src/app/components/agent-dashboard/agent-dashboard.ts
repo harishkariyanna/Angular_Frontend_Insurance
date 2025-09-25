@@ -20,6 +20,9 @@ export class AgentDashboard implements OnInit {
   activeTab = 'applications';
   showDetailsModal = false;
   approvedCustomers: any[] = [];
+  uniqueCustomers: any[] = [];
+  selectedCustomerDetails: any = null;
+  showCustomerDetailsModal = false;
 
   constructor(
     private policyApplicationService: PolicyApplication,
@@ -41,6 +44,69 @@ export class AgentDashboard implements OnInit {
 
   loadApprovedCustomers() {
     this.approvedCustomers = this.customers.filter(c => c.status === 'Approved');
+    this.groupUniqueCustomers();
+  }
+
+  groupUniqueCustomers() {
+    const customerMap = new Map();
+    this.approvedCustomers.forEach(customer => {
+      const userId = customer.user.id;
+      if (!customerMap.has(userId)) {
+        customerMap.set(userId, {
+          user: customer.user,
+          policies: [],
+          totalPolicies: 0
+        });
+      }
+      customerMap.get(userId).policies.push(customer);
+      customerMap.get(userId).totalPolicies++;
+    });
+    this.uniqueCustomers = Array.from(customerMap.values());
+  }
+
+  viewCustomerDetails(customer: any) {
+    this.selectedCustomerDetails = customer;
+    this.loadCustomerClaims(customer.user.id);
+    this.showCustomerDetailsModal = true;
+  }
+
+  loadCustomerClaims(userId: number) {
+    this.claimService.getClaims().subscribe({
+      next: (claims) => {
+        this.selectedCustomerDetails.claims = claims.filter(c => c.userId === userId);
+      },
+      error: () => {
+        this.selectedCustomerDetails.claims = [];
+      }
+    });
+  }
+
+  closeCustomerDetailsModal() {
+    this.showCustomerDetailsModal = false;
+    this.selectedCustomerDetails = null;
+  }
+
+  downloadCustomerProfile() {
+    if (this.selectedCustomerDetails?.user?.id) {
+      const url = `http://localhost:5001/api/userprofile/download/${this.selectedCustomerDetails.user.id}`;
+      const token = localStorage.getItem('token');
+      
+      fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${this.selectedCustomerDetails.user.name}_profile.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => console.error('Error downloading profile:', error));
+    }
   }
 
   loadCustomers() {

@@ -27,7 +27,7 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>Customer Email</th>
+                  <th>Customer</th>
                   <th>Policy</th>
                   <th>Duration</th>
                   <th>Premium</th>
@@ -38,7 +38,10 @@
               </thead>
               <tbody>
                 <tr *ngFor="let customer of customers">
-                  <td>{{ customer.user.email }}</td>
+                  <td>
+                    <strong>{{ customer.user.name }}</strong><br>
+                    <small class="text-muted">{{ customer.user.email }}</small>
+                  </td>
                   <td>{{ customer.policy.name }}</td>
                   <td>{{ customer.durationMonths }} months</td>
                   <td>₹{{ (customer.policy.premium * customer.durationMonths / 12) | number:'1.2-2' }}</td>
@@ -67,7 +70,7 @@
           <h5>Customer Claims</h5>
         </div>
         <div class="card-body">
-          <app-claims-table></app-claims-table>
+          <app-claims-table [hideSubmitButton]="true"></app-claims-table>
         </div>
       </div>
     </div>
@@ -79,17 +82,16 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-md-6" *ngFor="let customer of approvedCustomers">
-              <div class="card mb-3">
+            <div class="col-md-4" *ngFor="let customer of uniqueCustomers">
+              <div class="card mb-3 cursor-pointer" (click)="viewCustomerDetails(customer)">
                 <div class="card-body">
-                  <h6 class="card-title">{{ customer.user.email }}</h6>
+                  <h6 class="card-title">{{ customer.user.name }}</h6>
+                  <p class="text-muted mb-2">{{ customer.user.email }}</p>
                   <p class="card-text">
-                    <strong>Policy:</strong> {{ customer.policy.name }}<br>
-                    <strong>Duration:</strong> {{ customer.durationMonths }} months<br>
-                    <strong>Premium:</strong> ₹{{ (customer.policy.premium * customer.durationMonths / 12) | number:'1.2-2' }}<br>
-                    <strong>Status:</strong> 
-                    <span class="badge bg-success">{{ customer.status }}</span>
+                    <strong>Total Policies:</strong> {{ customer.totalPolicies }}<br>
+                    <span class="badge bg-success">Active Customer</span>
                   </p>
+                  <small class="text-primary">Click to view details</small>
                 </div>
               </div>
             </div>
@@ -111,6 +113,7 @@
           <div class="row">
             <div class="col-md-6">
               <h6>Customer Information</h6>
+              <p><strong>Name:</strong> {{ selectedCustomer.user.name }}</p>
               <p><strong>Email:</strong> {{ selectedCustomer.user.email }}</p>
               <p><strong>Applied Date:</strong> {{ selectedCustomer.createdAt | date:'dd/MM/yyyy, h:mm a':'en-IN' }}</p>
             </div>
@@ -153,4 +156,99 @@
     </div>
   </div>
   <div class="modal-backdrop" *ngIf="showDetailsModal" (click)="closeDetailsModal()"></div>
+
+  <!-- Customer Details Modal -->
+  <div class="modal" [class.d-block]="showCustomerDetailsModal" *ngIf="showCustomerDetailsModal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Customer Details - {{ selectedCustomerDetails?.user?.name }}</h5>
+          <button type="button" class="btn-close" (click)="closeCustomerDetailsModal()"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedCustomerDetails">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6>Customer Information</h6>
+              <p><strong>Name:</strong> {{ selectedCustomerDetails.user.name }}</p>
+              <p><strong>Email:</strong> {{ selectedCustomerDetails.user.email }}</p>
+              <p><strong>Total Policies:</strong> {{ selectedCustomerDetails.totalPolicies }}</p>
+            </div>
+          </div>
+          
+          <ul class="nav nav-tabs" id="customerTabs">
+            <li class="nav-item">
+              <a class="nav-link active" data-bs-toggle="tab" href="#policies-tab">Policies ({{ selectedCustomerDetails.policies.length }})</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#claims-tab">Claims ({{ selectedCustomerDetails.claims?.length || 0 }})</a>
+            </li>
+          </ul>
+          
+          <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="policies-tab">
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Policy</th>
+                      <th>Duration</th>
+                      <th>Premium</th>
+                      <th>Applied Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let policy of selectedCustomerDetails.policies">
+                      <td>{{ policy.policy.name }}</td>
+                      <td>{{ policy.durationMonths }} months</td>
+                      <td>₹{{ (policy.policy.premium * policy.durationMonths / 12) | number:'1.2-2' }}</td>
+                      <td>{{ policy.createdAt | date:'dd/MM/yyyy':'en-IN' }}</td>
+                      <td><span class="badge bg-success">{{ policy.status }}</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="claims-tab">
+              <div class="table-responsive" *ngIf="selectedCustomerDetails.claims?.length > 0; else noClaims">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Policy</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let claim of selectedCustomerDetails.claims">
+                      <td>{{ claim.title }}</td>
+                      <td>₹{{ claim.amount }}</td>
+                      <td>
+                        <span class="badge" [class]="'bg-' + (claim.status === 'Approved' ? 'success' : claim.status === 'Rejected' ? 'danger' : 'warning')">
+                          {{ claim.status }}
+                        </span>
+                      </td>
+                      <td>{{ claim.createdAt | date:'dd/MM/yyyy':'en-IN' }}</td>
+                      <td>{{ claim.policyApplication?.policy?.name }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ng-template #noClaims>
+                <p class="text-muted">No claims found for this customer.</p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="downloadCustomerProfile()">Download Profile</button>
+          <button type="button" class="btn btn-secondary" (click)="closeCustomerDetailsModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" *ngIf="showCustomerDetailsModal" (click)="closeCustomerDetailsModal()"></div>
 </div>

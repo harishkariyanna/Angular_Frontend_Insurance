@@ -51,7 +51,6 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Customer Count</th>
@@ -61,20 +60,19 @@
           </thead>
           <tbody>
             <tr *ngFor="let agent of agents">
-              <td>{{ agent.id }}</td>
               <td>
                 <span *ngIf="editingAgent?.id !== agent.id">{{ agent.name }}</span>
                 <input *ngIf="editingAgent?.id === agent.id" 
-                       type="text" 
-                       class="form-control form-control-sm" 
-                       [(ngModel)]="editingAgent.name">
+                      type="text" 
+                      class="form-control form-control-sm" 
+                      [(ngModel)]="editingAgent.name">
               </td>
               <td>
                 <span *ngIf="editingAgent?.id !== agent.id">{{ agent.email }}</span>
                 <input *ngIf="editingAgent?.id === agent.id" 
-                       type="email" 
-                       class="form-control form-control-sm" 
-                       [(ngModel)]="editingAgent.email">
+                      type="email" 
+                      class="form-control form-control-sm" 
+                      [(ngModel)]="editingAgent.email">
               </td>
               <td>{{ agent.customerCount }}</td>
               <td>{{ agent.createdAt | date:'short' }}</td>

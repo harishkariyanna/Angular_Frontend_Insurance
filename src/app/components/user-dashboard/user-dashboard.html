@@ -14,6 +14,9 @@
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab === 'applications'" (click)="setActiveTab('applications')">My Applications</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">Profile</a>
+    </li>
   </ul>
 
   <div class="tab-content mt-3">
@@ -25,6 +28,9 @@
     </div>
     <div *ngIf="activeTab === 'claims'">
       <app-claims-table></app-claims-table>
+    </div>
+    <div *ngIf="activeTab === 'profile'">
+      <app-customer-profile></app-customer-profile>
     </div>
   </div>
 </div>
