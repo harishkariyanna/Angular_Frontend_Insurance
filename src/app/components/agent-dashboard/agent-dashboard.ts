@@ -5,10 +5,11 @@ import { PolicyApplication } from '../../services/policy-application';
 import { Claim } from '../../services/claim';
 import { Auth } from '../../services/auth';
 import { ClaimsTable } from '../claims-table/claims-table';
+import { Footer } from '../footer/footer';
 
 @Component({
   selector: 'app-agent-dashboard',
-  imports: [CommonModule, ClaimsTable],
+  imports: [CommonModule, ClaimsTable, Footer],
   templateUrl: './agent-dashboard.html',
   styleUrl: './agent-dashboard.css'
 })

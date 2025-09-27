@@ -1,36 +1,103 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>User Dashboard</h2>
-    <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+    <h2>{{ isLoggedIn() ? 'User Dashboard' : 'Insurance Policies' }}</h2>
+    <div>
+      <button *ngIf="!isLoggedIn()" class="btn btn-primary me-2" routerLink="/login">Login</button>
+      <button *ngIf="!isLoggedIn()" class="btn btn-outline-primary me-2" routerLink="/register">Register</button>
+      <button *ngIf="isLoggedIn()" class="btn btn-outline-danger" (click)="logout()">Logout</button>
+    </div>
   </div>
   
   <ul class="nav nav-tabs">
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab === 'policies'" (click)="setActiveTab('policies')">Policies</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="isLoggedIn()">
       <a class="nav-link" [class.active]="activeTab === 'claims'" (click)="setActiveTab('claims')">Claims</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="isLoggedIn()">
       <a class="nav-link" [class.active]="activeTab === 'applications'" (click)="setActiveTab('applications')">My Applications</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="isLoggedIn()">
+      <a class="nav-link" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">Reviews</a>
+    </li>
+    <li class="nav-item" *ngIf="isLoggedIn()">
       <a class="nav-link" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">Profile</a>
     </li>
   </ul>
 
   <div class="tab-content mt-3">
     <div *ngIf="activeTab === 'policies'">
-      <app-policy-list></app-policy-list>
+      <app-policy-list [showApplyButton]="isLoggedIn()"></app-policy-list>
+      
+      <!-- Customer Reviews Carousel -->
+      <div class="mt-5">
+        <div class="text-center mb-4">
+          <h3 class="fw-bold mb-3">What Our Customers Say</h3>
+          <p class="lead text-muted">Real experiences from our satisfied policyholders</p>
+        </div>
+        
+        <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-pause="hover" *ngIf="customerReviews.length > 0">
+          <div class="carousel-inner">
+            <div class="carousel-item" [class.active]="i === 0" *ngFor="let reviewGroup of getReviewGroups(); let i = index">
+              <div class="row">
+                <div class="col-md-4 mb-4" *ngFor="let review of reviewGroup">
+                  <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <div class="mb-3">
+                        <i *ngFor="let star of getStars(review.rating)" [class]="star + ' text-warning'"></i>
+                      </div>
+                      <h6 class="fw-bold mb-2">{{ review.title }}</h6>
+                      <p class="mb-3">{{ review.content }}</p>
+                      <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                          {{ (review.user?.name || review.user?.email)?.charAt(0)?.toUpperCase() }}
+                        </div>
+                        <div class="ms-3">
+                          <h6 class="mb-0">{{ review.user?.name || 'Anonymous User' }}</h6>
+                          <small class="text-muted">Verified Customer</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#reviewsCarousel" [attr.data-bs-slide-to]="i" 
+                    [class.active]="i === 0" *ngFor="let group of getReviewGroups(); let i = index"></button>
+          </div>
+        </div>
+        
+        <div class="text-center mt-4" *ngIf="customerReviews.length === 0">
+          <p class="text-muted">No customer reviews yet. Be the first to share your experience!</p>
+        </div>
+      </div>
     </div>
-    <div *ngIf="activeTab === 'applications'">
+    <div *ngIf="activeTab === 'applications' && isLoggedIn()">
       <app-applications-table></app-applications-table>
     </div>
-    <div *ngIf="activeTab === 'claims'">
+    <div *ngIf="activeTab === 'claims' && isLoggedIn()">
       <app-claims-table></app-claims-table>
     </div>
-    <div *ngIf="activeTab === 'profile'">
+    <div *ngIf="activeTab === 'reviews' && isLoggedIn()">
+      <app-reviews></app-reviews>
+    </div>
+    <div *ngIf="activeTab === 'profile' && isLoggedIn()">
       <app-customer-profile></app-customer-profile>
     </div>
   </div>
 </div>
+
+<app-footer></app-footer>

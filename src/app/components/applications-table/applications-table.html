@@ -38,7 +38,7 @@
               {{ app.status }}
             </span>
           </td>
-          <td>{{ app.createdAt | date:'dd/MM/yyyy, h:mm a':'en-IN' }}</td>
+          <td>{{ app.createdAt | date:'dd/MM/yyyy, h:mm a' }}</td>
           <td *ngIf="authService.isAdmin()">{{ app.user?.email }}</td>
           <td *ngIf="authService.isAdmin()">{{ app.assignedAgent?.email || 'Not Assigned' }}</td>
           <td *ngIf="authService.isAdmin()">

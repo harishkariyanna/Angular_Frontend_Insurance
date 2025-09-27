@@ -65,10 +65,7 @@
                 <label class="form-label">Address</label>
                 <textarea class="form-control" [(ngModel)]="profile.address" name="address" rows="3"></textarea>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Occupation</label>
-                <input type="text" class="form-control" [(ngModel)]="profile.occupation" name="occupation">
-              </div>
+
             </div>
             <button type="submit" class="btn btn-success me-2">
               <i class="fas fa-save"></i> Save Changes
@@ -89,10 +86,7 @@
                 <strong>Gender:</strong>
                 <p>{{ profile.gender || 'Not provided' }}</p>
               </div>
-              <div class="col-md-6 mb-3">
-                <strong>Occupation:</strong>
-                <p>{{ profile.occupation || 'Not provided' }}</p>
-              </div>
+
               <div class="col-md-12 mb-3">
                 <strong>Address:</strong>
                 <p>{{ profile.address || 'Not provided' }}</p>

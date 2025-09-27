@@ -83,8 +83,7 @@ export class CustomerProfile implements OnInit {
       phone: this.profile.phone,
       address: this.profile.address,
       dateOfBirth: this.profile.dateOfBirth,
-      gender: this.profile.gender,
-      occupation: this.profile.occupation
+      gender: this.profile.gender
     };
     
     const dataStr = JSON.stringify(profileData, null, 2);

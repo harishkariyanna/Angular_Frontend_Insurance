@@ -12,6 +12,7 @@ import { PolicyApply } from '../policy-apply/policy-apply';
 })
 export class PolicyList implements OnInit {
   @Input() isAdmin = false;
+  @Input() showApplyButton = true;
   @ViewChild(PolicyApply) policyApply!: PolicyApply;
   policies: any[] = [];
   showAddForm = false;

@@ -75,7 +75,7 @@
                       [(ngModel)]="editingAgent.email">
               </td>
               <td>{{ agent.customerCount }}</td>
-              <td>{{ agent.createdAt | date:'short' }}</td>
+              <td>{{ formatToIST(agent.createdAt) }}</td>
               <td>
                 <div class="btn-group" *ngIf="editingAgent?.id !== agent.id">
                   <button class="btn btn-sm btn-outline-primary" (click)="editAgent(agent)">

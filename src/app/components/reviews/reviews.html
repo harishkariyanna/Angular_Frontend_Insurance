@@ -1,0 +1,52 @@
+<div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4>Write a Review</h4>
+      <p class="text-muted mb-0">Share your experience with our insurance services</p>
+    </div>
+  </div>
+
+  <!-- Review Submission Form -->
+  <div class="card">
+    <div class="card-body">
+      <form (ngSubmit)="submitReview()">
+        <div class="mb-3">
+          <label class="form-label">Review Title</label>
+          <input type="text" class="form-control" [(ngModel)]="newReview.title" name="title" 
+                 placeholder="Give your review a title" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Rating ({{ newReview.rating }}/5)</label>
+          <div class="rating-stars">
+            <i *ngFor="let i of [1,2,3,4,5]" 
+               [class]="i <= newReview.rating ? 'fas fa-star text-warning' : 'far fa-star text-muted'"
+               (click)="setRating(i)"
+               (mouseenter)="hoverRating = i"
+               (mouseleave)="hoverRating = 0"
+               [style.color]="hoverRating >= i ? '#ffc107' : ''"
+               style="cursor: pointer; font-size: 1.8rem; margin-right: 8px; transition: color 0.2s ease;"></i>
+          </div>
+          <small class="text-muted">Click on stars to rate your experience</small>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Your Review</label>
+          <textarea class="form-control" rows="4" [(ngModel)]="newReview.content" name="content" 
+                    placeholder="Tell us about your experience with our services..." required></textarea>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane me-1"></i>Submit Review
+          </button>
+          <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+            <i class="fas fa-undo me-1"></i>Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="alert alert-info mt-4">
+    <i class="fas fa-info-circle me-2"></i>
+    <strong>Note:</strong> Your review will be visible on our website after admin approval.
+  </div>
+</div>

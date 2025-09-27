@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PolicyList } from '../policy-list/policy-list';
-
 import { ApplicationsTable } from '../applications-table/applications-table';
 import { AgentManagement } from '../agent-management/agent-management';
 import { CustomerAssignmentComponent } from '../customer-assignment/customer-assignment';
+import { ReviewManagement } from '../review-management/review-management';
+import { Footer } from '../footer/footer';
 import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, PolicyList, ApplicationsTable, AgentManagement, CustomerAssignmentComponent],
+  imports: [CommonModule, PolicyList, ApplicationsTable, AgentManagement, CustomerAssignmentComponent, ReviewManagement, Footer],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })

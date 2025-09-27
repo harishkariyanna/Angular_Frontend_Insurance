@@ -62,7 +62,7 @@
             </span>
           </td>
           <td>{{ claim.policyApplication?.policy?.name }}</td>
-          <td>{{ claim.createdAt | date:'dd/MM/yyyy, h:mm a':'en-IN' }}</td>
+          <td>{{ claim.createdAt | date:'dd/MM/yyyy, h:mm a' }}</td>
           <td *ngIf="authService.isAdmin() || authService.isAgent()">
             <button class="btn btn-sm btn-primary" (click)="openApprovalModal(claim)" *ngIf="claim.status === 'Pending'">
               Review

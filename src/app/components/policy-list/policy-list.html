@@ -49,7 +49,7 @@
           <h5 class="card-title">{{ policy.name }}</h5>
           <p class="card-text">{{ policy.description }}</p>
           <p class="card-text"><strong>₹{{ policy.premium }}</strong></p>
-          <button *ngIf="!isAdmin" class="btn btn-primary" (click)="applyForPolicy(policy)">Apply</button>
+          <button *ngIf="!isAdmin && showApplyButton" class="btn btn-primary" (click)="applyForPolicy(policy)">Apply</button>
           <div *ngIf="isAdmin">
             <button class="btn btn-warning me-2" (click)="editPolicy(policy)">Edit</button>
             <button class="btn btn-danger" (click)="deletePolicy(policy.id)">Delete</button>

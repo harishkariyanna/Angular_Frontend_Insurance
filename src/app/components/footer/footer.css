@@ -1,0 +1,95 @@
+.insurance-footer {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 40px 0 20px;
+  margin-top: 50px;
+}
+
+.insurance-footer h5 {
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.insurance-footer h6 {
+  color: #e8f4fd;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.insurance-footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.insurance-footer ul li {
+  margin-bottom: 8px;
+}
+
+.insurance-footer ul li a {
+  color: #b8d4f0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.insurance-footer ul li a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.social-links {
+  margin-top: 20px;
+}
+
+.social-links a {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 40px;
+  margin-right: 10px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.contact-info p {
+  margin-bottom: 10px;
+  color: #b8d4f0;
+}
+
+.contact-info i {
+  width: 20px;
+  color: #4a90e2;
+  margin-right: 8px;
+}
+
+.insurance-footer hr {
+  border-color: rgba(255, 255, 255, 0.2);
+  margin: 30px 0 20px;
+}
+
+.insurance-footer .row:last-child p,
+.insurance-footer .row:last-child a {
+  color: #b8d4f0;
+  font-size: 0.9rem;
+}
+
+.insurance-footer .row:last-child a {
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.insurance-footer .row:last-child a:hover {
+  color: #fff;
+}

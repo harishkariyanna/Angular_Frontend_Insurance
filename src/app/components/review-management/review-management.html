@@ -1,0 +1,131 @@
+<div>
+  <h4 class="mb-4">Review Management</h4>
+  
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'pending'" (click)="setActiveTab('pending')">
+        Pending Reviews ({{ pendingReviews.length }})
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'approved'" (click)="setActiveTab('approved')">
+        Approved Reviews ({{ approvedReviews.length }})
+      </a>
+    </li>
+  </ul>
+  
+  <!-- Pending Reviews Tab -->
+  <div *ngIf="activeTab === 'pending'">
+    <div *ngIf="pendingReviews.length === 0" class="text-center py-5">
+      <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+      <h5 class="text-muted">No pending reviews</h5>
+      <p class="text-muted">All reviews have been processed!</p>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-4" *ngFor="let review of pendingReviews">
+        <div class="card border-warning">
+          <div class="card-header bg-warning bg-opacity-10">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" 
+                   style="width: 40px; height: 40px; font-weight: bold;">
+                {{ (review.user?.name || review.user?.email)?.charAt(0)?.toUpperCase() }}
+              </div>
+              <div>
+                <h6 class="mb-0">{{ review.user?.name || 'Anonymous User' }}</h6>
+                <small class="text-muted">{{ review.user?.email }}</small>
+              </div>
+              <div class="ms-auto">
+                <span class="badge bg-warning text-dark">
+                  <i class="fas fa-clock me-1"></i>Pending
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h6 class="card-title mb-0 fw-bold">{{ review.title }}</h6>
+              <div class="rating">
+                <i *ngFor="let star of getStars(review.rating)" [class]="star + ' text-warning'"></i>
+              </div>
+            </div>
+            <p class="card-text text-muted mb-3">{{ review.content }}</p>
+            <div class="mb-3">
+              <small class="text-muted">
+                <i class="fas fa-calendar-alt me-1"></i>{{ review.createdAt | date:'dd/MM/yyyy, h:mm a' }}
+              </small>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-success btn-sm" (click)="approveReview(review.id)">
+                <i class="fas fa-check me-1"></i>Approve
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="deleteReview(review.id)">
+                <i class="fas fa-trash me-1"></i>Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Approved Reviews Tab -->
+  <div *ngIf="activeTab === 'approved'">
+    <div *ngIf="approvedReviews.length === 0" class="text-center py-5">
+      <i class="fas fa-star fa-3x text-success mb-3"></i>
+      <h5 class="text-muted">No approved reviews</h5>
+      <p class="text-muted">No reviews have been approved yet!</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6 mb-4" *ngFor="let review of approvedReviews">
+        <div class="card" [class.border-success]="review.isVisible" [class.border-secondary]="!review.isVisible">
+          <div class="card-header" [class.bg-success]="review.isVisible" [class.bg-secondary]="!review.isVisible" [class.bg-opacity-10]="true">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" 
+                   style="width: 40px; height: 40px; font-weight: bold;">
+                {{ (review.user?.name || review.user?.email)?.charAt(0)?.toUpperCase() }}
+              </div>
+              <div>
+                <h6 class="mb-0">{{ review.user?.name || 'Anonymous User' }}</h6>
+                <small class="text-muted">{{ review.user?.email }}</small>
+              </div>
+              <div class="ms-auto">
+                <span class="badge" [class.bg-success]="review.isVisible" [class.bg-secondary]="!review.isVisible">
+                  <i class="fas" [class.fa-eye]="review.isVisible" [class.fa-eye-slash]="!review.isVisible" class="me-1"></i>
+                  {{ review.isVisible ? 'Visible' : 'Hidden' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h6 class="card-title mb-0 fw-bold">{{ review.title }}</h6>
+              <div class="rating">
+                <i *ngFor="let star of getStars(review.rating)" [class]="star + ' text-warning'"></i>
+              </div>
+            </div>
+            <p class="card-text text-muted mb-3">{{ review.content }}</p>
+            <div class="mb-3">
+              <small class="text-muted">
+                <i class="fas fa-calendar-alt me-1"></i>{{ review.createdAt | date:'dd/MM/yyyy, h:mm a' }}
+              </small>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm" 
+                      [class.btn-warning]="review.isVisible" 
+                      [class.btn-success]="!review.isVisible" 
+                      (click)="toggleVisibility(review.id)">
+                <i class="fas" [class.fa-eye-slash]="review.isVisible" [class.fa-eye]="!review.isVisible" class="me-1"></i>
+                {{ review.isVisible ? 'Hide' : 'Show' }}
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="deleteReview(review.id)">
+                <i class="fas fa-trash me-1"></i>Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -17,6 +17,9 @@
     <li class="nav-item">
       <a class="nav-link" [class.active]="activeTab === 'assignments'" (click)="setActiveTab('assignments')">Customer Assignment</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">Review Management</a>
+    </li>
   </ul>
 
   <div class="tab-content mt-3">
@@ -32,5 +35,10 @@
     <div *ngIf="activeTab === 'assignments'">
       <app-customer-assignment></app-customer-assignment>
     </div>
+    <div *ngIf="activeTab === 'reviews'">
+      <app-review-management></app-review-management>
+    </div>
   </div>
 </div>
+
+<app-footer></app-footer>
